@@ -1,17 +1,6 @@
 import Player from './Player.js';
 import Fruit from './Fruit.js';
-/**function createNeuralNetWork(){
-    nn = new RedeNeural(4,hidden_layers,3,learning_rate);
-    get(`genome`).value=JSON.stringify(nn);
-}
 
-function loadGenome(){
-    mnn = JSON.parse(get(`genome`).value);
-    createNeuralNetWork();
-    Object.keys(mnn).forEach((key)=>{
-        nn[key] = mnn[key];
-    })
-} */
 export default function createGame(screen){
     const colorsPlayer = [
         'blue','red','yellow','purple','white','pink','orange','gold','silver','lightblue'
@@ -60,11 +49,8 @@ export default function createGame(screen){
             
         const i = Math.floor(Math.random()*colorsPlayer.length);
         const p = new Player(colorsPlayer[i],Math.floor(Math.random()*screen.width),Math.floor(Math.random()*screen.height));
-        //const p = new Player(colorsPlayer[i]);
         state.players[p.id]=p;
-        // console.log(genomes);
-        // console.log(datasetTraining.i.length);
-        
+
         if(genomes.length > 0){
             document.getElementById('genome').value=JSON.stringify(genomes[0]);
             let genome = genomes[Math.floor(Math.random()*genomes.length)];
@@ -340,43 +326,8 @@ export default function createGame(screen){
                         datasetTraining.i.push(p.datasetNN.i[x]);
                         datasetTraining.o.push(outputs[maxIndex]);
                     }
-                    //console.log(p.datasetNN.i[x],`[${p.datasetNN.o[x].join(',')}] => [${outputs[maxIndex]}]`);  
                 }
 
-                
-                // //Pega o penultimo movimento (que é o que fez o player "morrer")
-                // //para treinar a rede neural
-                // const p = playersGeracaoAtual[x];
-                // const qtyInput = p.datasetNN.i.length;
-                // const inputBeforeLast = p.datasetNN.i[qtyInput-2];
-                // if(inputBeforeLast){
-                //     let inputAnalytic = inputBeforeLast.slice();
-                //     let arrMAxIndex = [];
-                //     arrMAxIndex.push(getIndexByMaxValue(inputAnalytic));
-                //     inputAnalytic[getIndexByMaxValue(inputAnalytic)] = -1;
-                //     arrMAxIndex.push(getIndexByMaxValue(inputAnalytic));
-                //     let outputNN = [];
-                //     for(const i in arrMAxIndex){
-                //         if(arrMAxIndex[i] === 0){
-                //             outputNN.push([1,0,0,0]);
-                //         }else if(arrMAxIndex[i] === 1){
-                //             outputNN.push([0,1,0,0]);
-                //         }else if(arrMAxIndex[i] === 2){
-                //             outputNN.push([0,0,1,0]);
-                //         }else if(arrMAxIndex[i] === 3){
-                //             outputNN.push([0,0,0,1]);
-                //         }
-                //     }
-
-                // }
-
-                //document.getElementById('dataset').insertAdjacentText('beforeend',`${inputBeforeLast} > ${outputNN[0]}\n`);
-                //document.getElementById('dataset').insertAdjacentText('beforeend',`${inputBeforeLast} > ${outputNN[1]}\n`);
-
-
-                
-                //console.log(p.datasetNN.i[qtyInput-1],p.datasetNN.o[qtyInput-1]);
-                
             }
         }else{
             setTimeout(gameHasFinished,1000);
@@ -393,7 +344,6 @@ export default function createGame(screen){
         let target = {};
         for (let prop in src) {
             if (src.hasOwnProperty(prop)) {
-            // if the value is a nested object, recursively copy all it's properties
             if( Array.isArray(src[prop])){
                 target[prop] = src[prop];
             }else if (isObject(src[prop])) {
@@ -413,7 +363,6 @@ export default function createGame(screen){
     function resetGenome(){
         genomes = [];
         datasetTraining = {i:[],o:[]};
-        console.log('aqui',genomes, datasetTraining);
     }
 
     function getNearestFruit(){
