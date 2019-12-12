@@ -1,0 +1,64 @@
+#screen{
+    border:8px solid #000;
+    width: 1000px;
+    height: 400px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edges;
+    background: #333;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.infos, .infosTextarea{
+    float: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    padding: 10px;
+    background: #000;
+    width: 600px;
+    height: 296px;
+    overflow: auto;
+    word-break: break-all;
+    color:green
+}
+.controles{
+    float: left;
+}
+
+.controles .direcionais button{
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+    float: left;
+    background: #333;
+    color: aliceblue;
+    border: 0;
+}
+
+.controles .direcionais button:disabled{
+    background: #999;
+}
+
+.logs{
+    border:1px solid #222;
+    background: #222;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 4px;
+}
+
+.infosTextarea{
+    height: auto;
+}
+
+.infosTextarea textarea{
+    width: 100%;
+    height: 300px;
+    color: lime;
+    background: transparent;
+    resize: none;
+    border: 2px solid #444;
+    margin-bottom: 5px;
+}
