@@ -65,6 +65,7 @@ export default function createGame(screen){
             }
         }
         //calculateDistances(p);
+        document.getElementById('movimentos_restantes').innerText=(limitMoves - state.players[p.id].moves);
         return p.id;
     }
 
@@ -128,15 +129,11 @@ export default function createGame(screen){
         const move = accetedKeys[cmd.keyPressed];
         if(player && move){
             move(player);
-            //console.log(move);
-            
             updatePlayerAttributes(player);
             calculateDistances();
             checkCollisionFruit(player);
-            //checkCollisionScreen(player);
             checkIsAlive(player);
-            //checkMovesRepeat(player);
-            
+            document.getElementById('movimentos_restantes').innerText=(limitMoves - player.moves);            
         }
     }
 
@@ -155,11 +152,6 @@ export default function createGame(screen){
             }
         }
         return moves.length;
-        // if(player.posHist.length >= qtyHistPos && moves.length === 2){
-        //     player.isAlive=false;
-        //     player.isLost=true;
-        //     player.moves = player.moves - 99;
-        // }
     }
 
     function calculateDistanceCollision(){
@@ -187,12 +179,7 @@ export default function createGame(screen){
         const player = state.fruits[playerid];
         if(player){
             let d = document.getElementById('distanceScreen_'+player.id);
-            // let m = document.getElementById('moves_'+player.id);
-            // let l = document.getElementById('lastmoves_'+player.id);
-
             if(d) d.innerText=JSON.stringify(player.sensorCollision); 
-            // if(m) m.innerText=player.moves; 
-            // if(l) l.innerText=JSON.stringify(player.posHist);
         }
     }
 
