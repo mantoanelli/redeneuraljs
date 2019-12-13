@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <title>Game</title>
+        <link rel="stylesheet" href="./css/style.css" />
+    </head>
+    <body>
+        <canvas id="screen" width="100" height="40"></canvas>
+        <div class="controles" style="width: 80%;">
+            <table cellspacing="4" cellpadding="0">
+                <tr>
+                    <th>Geração</th>
+                    <th>Movimentos Restantes</th>
+                    <th>Pontos</th>
+                    <th>Pontuação Max</th>
+                </tr>
+                <tr>
+                    <td><span id="geracao">1</span></td>
+                    <td><span id="movimentos_restantes">100</span></td>
+                    <td><span id="pontos">0</span></td>
+                    <td><span id="recorde">0</span></td>
+                </tr>
+            </table>
+            
+            
+            <button id="startAutoPlayBtn">Start Neural Network</button>
+            <button id="stopAutoPlayBtn">Stop</button>
+            <fieldset style="width: 100%;">
+                <legend>Genome Neural Network</legend>
+                <textarea style="width: 100%; height: 200px;" id="genome"></textarea>
+                <button onclick='document.getElementById("genome").value=JSON.stringify({"i_nodes":2,"h_nodes":4,"o_nodes":4,"bias_ih":{"rows":4,"cols":1,"data":[[0.11108955518744279],[0.5964305806976046],[-0.6112040914032817],[-0.4557366807656004]]},"bias_ho":{"rows":4,"cols":1,"data":[[-0.18987020792980783],[-1.8734871620461004],[-2.4568927598453087],[0.47530273926876404]]},"weigths_ih":{"rows":4,"cols":2,"data":[[0.05869948753978539,-3.071638708760401],[1.024231619686,-1.6258323700643207],[-1.5348105013064544,0.7215577420995044],[-1.5522502217399992,-1.3089925220237277]]},"weigths_ho":{"rows":4,"cols":4,"data":[[-0.9837819402227368,-1.8694783359987242,0.5075829045271921,-0.8551069851316188],[0.09530314044974132,-1.1183228627921433,1.3097870083974419,1.0901429734986576],[0.5835254650266661,0.7787891935959661,-0.8010263575318024,1.692500830871492],[-1.9034712979890174,1.4265488942208662,-1.1103806925152455,-0.9015583216310035]]},"learning_rate":0.15,"generation":17})'>Geração 17!</button>
+                <button id="loadGenome">Load Genome</button>
+            </fieldset>
+
+        </div>
+
+        <script type="module">
+            import createGame from "./game.js";
+            import renderScreen from "./render.js";
+
+            let qtyFruits = 3;
+            let generation = 0;
+
+            let game = null;
+            const screen = document.getElementById("screen");
+            const startAutoPlayBtn = document.getElementById("startAutoPlayBtn");
+            
+            game = createGame(screen);
+            let playerSelected = game.addPlayer();
+            document.getElementById("stopAutoPlayBtn").addEventListener("click",()=>{
+                stopAutoPlay();
+            })
+            document.getElementById("loadGenome").addEventListener("click",()=>{
+                game.loadGenome(document.getElementById("genome").value,playerSelected);
+            })
+            startAutoPlayBtn.addEventListener("click",()=>{
+                startAutoPlay()
+            });
+            var t;
+            var tt;
+            function startGame(){ 
+                game.start();
+                generation++;
+                document.getElementById("geracao").innerHTML=generation;
+                game.setGeneration(playerSelected, generation);
+                tt = setInterval(()=>{
+                    if(game.getTotalFruits() === 0){
+                        addFruits();
+                    }
+                },200);
+                game.calculateDistanceCollision();
+                game.gameHasFinished();
+            }
+
+            function addFruits(){
+                for(let x=0;x<qtyFruits;x++){
+                    game.addFruit();
+                }
+            }
+            
+            let render = renderScreen(screen, game, requestAnimationFrame,true,false);
+
+            startGame();
+
+            function startAutoPlay(){
+                game.autoMovePlayers();
+                t = setInterval(()=>{
+                    if(game.isFinishedGame()){
+                        game.removeAllFruits();
+                        playerSelected = game.addPlayer();
+                        clearInterval(tt);
+                        startGame();
+                        setTimeout(game.autoMovePlayers,500);
+                    }
+                    
+                },1000);
+            }
+
+            function stopAutoPlay(){
+                clearInterval(t);
+            }
+
+        </script>
+
+    </body>
+</html>
