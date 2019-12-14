@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Game</title>
+        <title>Snake Game</title>
         <link rel="stylesheet" href="./css/style.css" />
     </head>
     <body>
@@ -9,13 +9,13 @@
             <table cellspacing="4" cellpadding="0">
                 <tr>
                     <th>Geração</th>
-                    <th>Movimentos Restantes</th>
+                    <th>Pixels Percorridos</th>
                     <th>Pontos</th>
                     <th>Pontuação Max</th>
                 </tr>
                 <tr>
                     <td><span id="geracao">1</span></td>
-                    <td><span id="movimentos_restantes">100</span></td>
+                    <td><span id="pixels_percorridos">0</span></td>
                     <td><span id="pontos">0</span></td>
                     <td><span id="recorde">0</span></td>
                 </tr>
@@ -36,8 +36,9 @@
         <script type="module">
             import createGame from "./game.js";
             import renderScreen from "./render.js";
+            import createKeyBoardListener from './keyboard-listener.js';
 
-            let qtyFruits = 3;
+            let qtyFruits = 1;
             let generation = 0;
 
             let game = null;
@@ -55,6 +56,8 @@
             startAutoPlayBtn.addEventListener("click",()=>{
                 startAutoPlay()
             });
+            let keyboardListener = createKeyBoardListener(document,playerSelected);
+            
             var t;
             var tt;
             function startGame(){ 
@@ -62,6 +65,9 @@
                 generation++;
                 document.getElementById("geracao").innerHTML=generation;
                 game.setGeneration(playerSelected, generation);
+                keyboardListener.unsubscribeAll();
+                keyboardListener = createKeyBoardListener(document,playerSelected);
+                keyboardListener.subscribe(game.setDirection);
                 tt = setInterval(()=>{
                     if(game.getTotalFruits() === 0){
                         addFruits();
@@ -94,6 +100,18 @@
                     
                 },1000);
             }
+
+            let _t = setInterval(()=>{
+                if(game.isFinishedGame()){
+                    game.removeAllFruits();
+                    playerSelected = game.addPlayer();
+                    
+                    clearInterval(tt);
+                    startGame();
+                    //setTimeout(game.autoMovePlayers,500);
+                }
+                
+            },1000);
 
             function stopAutoPlay(){
                 clearInterval(t);

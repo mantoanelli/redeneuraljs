@@ -6,8 +6,8 @@ export default function createGame(screen){
         'blue','red','yellow','purple','white','pink','orange','gold','silver','lightblue'
     ];
     var isFinished = false;
-    var qtyHistPos = 20;
-    var limitMoves = 100;
+    var qtyHistPos = 50;
+    
     var genomes = [];
     var datasetTraining = {i:[],o:[]}
     var state = {
@@ -20,13 +20,29 @@ export default function createGame(screen){
     }
     let totalFruits = 0;
     let totalFruitsRecord = 0;
+    let directionMove = null;
 
     var playersGeracaoAtual = [];
+    let minTimeInterval = 50;
+    let timeInterval = 100;
+    let startTimeInterval = 100;
+    let _time;
 
     function start(){
         totalFruits = 0;
         isFinished = false;
         playersGeracaoAtual = [];
+        startMove();
+    }
+
+    function startMove(){
+        _time = setInterval(()=>{
+            if(directionMove){
+                movePlayer(directionMove);
+                console.log(timeInterval);
+                
+            }
+        },timeInterval)
     }
 
     function isFinishedGame(){
@@ -65,7 +81,7 @@ export default function createGame(screen){
             }
         }
         //calculateDistances(p);
-        document.getElementById('movimentos_restantes').innerText=(limitMoves - state.players[p.id].moves);
+        //document.getElementById('movimentos_restantes').innerText=(limitMoves - state.players[p.id].moves);
         return p.id;
     }
 
@@ -101,6 +117,20 @@ export default function createGame(screen){
         }
     }
 
+    function setDirection(cmd){
+        let player  = state.players[cmd.playerId];
+        const accetedKeys = {
+            ArrowRight(){},
+            ArrowLeft(){},
+            ArrowUp(){},  
+            ArrowDown(){}
+        }
+        const move = accetedKeys[cmd.keyPressed];
+        if(player && move){
+            directionMove = cmd;          
+        }
+    }
+
     function movePlayer(cmd){
         let player  = state.players[cmd.playerId];
         const accetedKeys = {
@@ -133,13 +163,24 @@ export default function createGame(screen){
             calculateDistances();
             checkCollisionFruit(player);
             checkIsAlive(player);
-            document.getElementById('movimentos_restantes').innerText=(limitMoves - player.moves);            
+            document.getElementById('pixels_percorridos').innerText=(player.moves);
+            
+            document.getElementById('pontos').innerText=player.hitFruits;
+                       
         }
     }
 
     function checkIsAlive(player){       
-        if(player.moves > limitMoves){
-            player.isAlive=false
+        let posHist = player.posHist.slice();
+        posHist.reverse();
+        for(let x = 1; x<= player.hitFruits;x++){
+            if(posHist[x]){
+                if(posHist[x][0] === player.x && posHist[x][1] === player.y){
+                    player.isAlive=false;
+                    clearInterval(_time);
+                    timeInterval = startTimeInterval;
+                }
+            }
         }
     }
 
@@ -166,7 +207,7 @@ export default function createGame(screen){
                 fruit.sensorCollision.x = (px-fx);
                 fruit.sensorCollision.y = (py-fy);
                 fruit.sensorCollision.distance = (Math.abs(px-fx)+Math.abs(py-fy));
-                logFruit(fruit.id);
+                //logFruit(fruit.id);
             }
         }
     }
@@ -198,8 +239,11 @@ export default function createGame(screen){
                 removeFruit(f.id);
                 player.hitFruits++;
                 totalFruits = player.hitFruits;
-                document.getElementById('pontos').innerText=totalFruits;
-                player.moves=0;
+
+                timeInterval = (timeInterval - 12) < minTimeInterval?minTimeInterval:timeInterval - 12;
+                clearInterval(_time);
+                startMove();
+                //player.moves=0;
             }
         }
     }
@@ -392,6 +436,7 @@ export default function createGame(screen){
         removeAllFruits,
         getTotalFruits,
         loadGenome,
-        setGeneration
+        setGeneration,
+        setDirection
     }
 }

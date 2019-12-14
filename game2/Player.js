@@ -8,7 +8,7 @@ export default class Player{
         this.color=color;
         this.moves=0;
         this.posHist=[];
-        this.hitFruits = 0;
+        this.hitFruits = 18;
         this.sensorDistance = {
             screen:{
                 t:0,r:0,b:0,l:0
@@ -19,12 +19,6 @@ export default class Player{
         }
         this.isAlive=true;
         this.isLost=false;
-        /*
-        inputs
-            [xp,yp,x,y,distance] - position of player and distance of objective
-        output
-            [t,r,b,l] - direction move
-        */
         this.nn = new RedeNeural(2,4,4);
         this.datasetNN = {i:[],o:[],bad:[]}
     }

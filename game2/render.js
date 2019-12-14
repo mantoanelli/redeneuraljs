@@ -39,10 +39,21 @@ export default function renderScreen(screen, game, requestAnimationFrame,isShowG
     }
     if(isShowGrid) showGrid();
     if(isShowLines) showLinesConncetionsPlayerVsFruits();
+
     for(const pId in game.state.players){
         const p = game.state.players[pId];
         context.fillStyle=p.color;
         context.fillRect(p.x,p.y,1,1);
+        //draw tail
+        let posHist = p.posHist.slice();
+        posHist.reverse();
+        for(let x = 1; x<= p.hitFruits;x++){
+            if(posHist[x]){
+                context.globalAlpha = 0.5;
+                context.fillRect(posHist[x][0],posHist[x][1],1,1);
+                context.globalAlpha = 1;
+            }
+        }
     }
 
     for(const fId in game.state.fruits){
