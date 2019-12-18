@@ -8,7 +8,7 @@ export default class Player{
         this.color=color;
         this.moves=0;
         this.posHist=[];
-        this.hitFruits = 18;
+        this.hitFruits = 0;
         this.sensorDistance = {
             screen:{
                 t:0,r:0,b:0,l:0
